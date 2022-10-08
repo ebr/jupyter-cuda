@@ -1,0 +1,3 @@
+[submodule "jupyter-docker-stacks"]
+	path = jupyter-docker-stacks
+	url = https://github.com/jupyter/docker-stacks.git
