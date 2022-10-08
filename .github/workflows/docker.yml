@@ -33,7 +33,7 @@ jobs:
         with:
           submodules: recursive
 
-      - name: build-minimal-gpu-image
+      - name: build-base-image
         run: |
 
           # Tagging `base` image with name as expected by `minimal` Dockerfile!
@@ -43,13 +43,25 @@ jobs:
             --cache-from /tmp/.buildx-cache \
             --tag ${{env.OWNER}}/base-notebook \
             jupyter-docker-stacks/base-notebook
+        env:
+          DOCKER_BUILDKIT: 1
+          BUILDKIT_PROGRESS: plain
+        shell: bash
 
+      - name: build-minimal-image
+        run: |
           docker build \
             --build-arg OWNER \
             --cache-from /tmp/.buildx-cache \
             --tag ${{env.OWNER}}/minimal-notebook \
             jupyter-docker-stacks/minimal-notebook
+        env:
+          DOCKER_BUILDKIT: 1
+          BUILDKIT_PROGRESS: plain
+        shell: bash
 
+      - name: save-tarball
+        run: |
           docker save ${{env.OWNER}}/minimal-notebook -o /tmp/${{env.IMAGE}}-minimal.tar
         env:
           DOCKER_BUILDKIT: 1
