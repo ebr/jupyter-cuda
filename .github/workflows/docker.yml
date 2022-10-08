@@ -38,31 +38,27 @@ jobs:
           submodules: recursive
 
       - name: build-base-image
-        run: |
-
+        uses: docker/build-push-action@v3
+        with:
+          context: jupyter-docker-stacks/base-notebook
+          load: true
           # Tagging `base` image with name as expected by `minimal` Dockerfile!
-
-          docker build \
-            --build-arg ROOT_CONTAINER \
-            --cache-from /tmp/.buildx-cache \
-            --tag ${{env.OWNER}}/base-notebook \
-            jupyter-docker-stacks/base-notebook
-        env:
-          DOCKER_BUILDKIT: 1
-          BUILDKIT_PROGRESS: plain
-        shell: bash
+          tags: ${{env.OWNER}}/base-notebook
+          build-args: |
+            ROOT_CONTAINER=${{env.ROOT_CONTAINER}}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: build-minimal-image
-        run: |
-          docker build \
-            --build-arg OWNER \
-            --cache-from /tmp/.buildx-cache \
-            --tag ${{env.OWNER}}/minimal-notebook \
-            jupyter-docker-stacks/minimal-notebook
-        env:
-          DOCKER_BUILDKIT: 1
-          BUILDKIT_PROGRESS: plain
-        shell: bash
+        uses: docker/build-push-action@v3
+        with:
+          context: jupyter-docker-stacks/minimal-notebook
+          load: true
+          tags: ${{env.OWNER}}/minimal-notebook
+          build-args: |
+            OWNER=${{env.OWNER}}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
   #     - name: save-tarball
   #       run: |
