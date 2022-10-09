@@ -29,6 +29,14 @@ jobs:
         with:
           submodules: recursive
 
+      - name: set up docker layer cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
       - name: dockerhub-login
         uses: docker/login-action@v2
         with:
@@ -43,8 +51,8 @@ jobs:
           tags: ${{env.OWNER}}/base-notebook
           build-args: |
             ROOT_CONTAINER=${{env.ROOT_CONTAINER}}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,src=/tmp/.buildx-cache
+          cache-to: type=gha,dest=/tmp/.buildx-cache,mode=max
           push: true
 
       - name: list-docker-images
