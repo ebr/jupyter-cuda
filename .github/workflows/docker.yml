@@ -37,11 +37,17 @@ jobs:
         with:
           submodules: recursive
 
+      - name: dockerhub-login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: build-base-image
         uses: docker/build-push-action@v3
         with:
           context: jupyter-docker-stacks/base-notebook
-          load: true
+          push: true
           # Tagging `base` image with name as expected by `minimal` Dockerfile!
           tags: ${{env.OWNER}}/base-notebook
           build-args: |
@@ -66,8 +72,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: jupyter-docker-stacks/minimal-notebook
-          pull: false
-          # load: true
           tags: ${{env.OWNER}}/minimal-notebook
           build-args: |
             OWNER=${{env.OWNER}}
@@ -114,11 +118,6 @@ jobs:
   # #         restore-keys: |
   # #           buildx-cache-
 
-  #     - name: dockerhub-login
-  #       uses: docker/login-action@v2
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
   #     ### https://github.com/docker/build-push-action/blob/master/docs/advanced/cache.md#local-cache
   #     - name: Build and push
