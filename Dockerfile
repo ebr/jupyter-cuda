@@ -5,7 +5,7 @@ USER root
 RUN apt-get install -y nvtop
 USER ${NB_UID}
 
-RUN conda install pytorch torchvision torchaudio cudatoolkit=11.6 -c pytorch
+# RUN conda install pytorch torchvision torchaudio cudatoolkit=11.6 -c pytorch
 RUN conda install ipywidgets jupyter_http_over_ws
 RUN jupyter nbextension enable --py widgetsnbextension --sys-prefix
 RUN jupyter serverextension enable --py jupyter_http_over_ws

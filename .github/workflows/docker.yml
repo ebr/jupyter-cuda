@@ -11,7 +11,8 @@ concurrency:
 
 env:
   # Base image with CUDA
-  ROOT_CONTAINER: "nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04"
+  # ROOT_CONTAINER: "nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04"
+  ROOT_CONTAINER: "nvcr.io/nvidia/pytorch:22.09-py3"
   # Dockerhub owner
   OWNER: ${{ secrets.DOCKERHUB_USERNAME }}
   IMAGE: jupyter-gpu
