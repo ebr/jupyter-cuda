@@ -39,13 +39,13 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: jupyter-docker-stacks/base-notebook
-          push: true
           # Tagging `base` image with name as expected by `minimal` Dockerfile!
           tags: ${{env.OWNER}}/base-notebook
           build-args: |
             ROOT_CONTAINER=${{env.ROOT_CONTAINER}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          push: true
 
       - name: list-docker-images
         run: |
@@ -60,6 +60,18 @@ jobs:
             OWNER=${{env.OWNER}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          push: true
+
+      - name: build-custom-image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          tags: ${{env.OWNER}}/jupyter-cuda
+          build-args: |
+            OWNER=${{env.OWNER}}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: true
 
 #      - name: upload image as artifact
 #        uses: actions/upload-artifact@v3
